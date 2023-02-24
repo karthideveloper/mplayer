@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPlayer from "react-player";
 import { searchYouTube } from "./services";
 function App() {
@@ -7,9 +7,14 @@ function App() {
 
   const search = (e) => {
     e.preventDefault();
-    searchYouTube(query).then(setList);
+    searchYouTube(query).then((res) => {
+      setList(res);
+    });
   };
 
+  useEffect(() => {
+    console.log(list);
+  }, [list]);
   return (
     <div className="app">
       <form onSubmit={search}>
@@ -27,7 +32,15 @@ function App() {
           <ul className="items">
             {list.map((item) => (
               <li className="item" key={item.id}>
-                <ReactPlayer url={item.url} controls={true} />
+                <ReactPlayer
+                  url={item.url}
+                  controls={true}
+                  onReady={() => console.log("onReady")}
+                  onStart={() => console.log("onStart")}
+                  onBuffer={() => console.log("onBuffer")}
+                  onSeek={(e) => console.log("onSeek", e)}
+                  onError={(e) => console.log("onError", e)}
+                />
                 <div>
                   <b>
                     <a href={item.link}>{item.title}</a>
